@@ -3,6 +3,7 @@ import java.io.Serializable;
 import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import java.util.LinkedList;
 
 public class Sprite implements Serializable {
 	/** Represents anything visible that isn't a background image, 
@@ -14,8 +15,9 @@ public class Sprite implements Serializable {
 	public static final long serialVersionUID = 1L;
 	public double x = 0, y = 0, xSpeed = 0, ySpeed = 0, xAccel = 0, yAccel = 0, height = 0, width = 0;
 	// having height/width different from imageHeight/imageWidth is useful if the sprite's image size doesn't match its actual dimensions.
+	public int currentFrame = 0;
 	
-	private BufferedImage img = null;
+	private LinkedList<BufferedImage> images = new LinkedList<BufferedImage>();
 	
 	/** Creates a sprite to be initialized later. 
 	 */
@@ -41,7 +43,7 @@ public class Sprite implements Serializable {
 	 */
 	public boolean setImage(File imagePath) {
 		try {
-			img = ImageIO.read(imagePath);
+			images.add(ImageIO.read(imagePath));
 			height = getImageHeight();
 			width = getImageWidth();
 			return true;
@@ -61,15 +63,15 @@ public class Sprite implements Serializable {
 	 * @return BufferedImage
 	 */
 	public BufferedImage getImage() {
-		return img;
+		return images.get(currentFrame);
 	}
 	
 	private int getImageWidth() {
-		return img.getWidth();
+		return getImage().getWidth();
 	}
 	
 	private int getImageHeight() {
-		return img.getHeight();
+		return getImage().getHeight();
 	}
 	
 	/** Moves the sprite by its speed. Adds the sprite's speed to its coordinates, then adds acceleration to speed.
@@ -79,6 +81,7 @@ public class Sprite implements Serializable {
 		y += ySpeed;
 		xSpeed += xAccel;
 		ySpeed += yAccel;
+		currentFrame = (currentFrame + 1) % images.size();
 	}
 	
 	/** Gets the vertical position of the top edge of this sprite.
