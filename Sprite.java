@@ -26,13 +26,39 @@ public class Sprite implements Serializable {
 	/** Creates a sprite with a given image, whose position will be initialized later.
 	 */
 	public Sprite(File imagePath) {
-		setImage(imagePath);
+		addImage(imagePath);
+		height = getImageHeight();
+		width = getImageWidth();
+	}
+	
+	/** Creates a sprite with a given images, whose position will be initialized later.
+	 */
+	public Sprite(File... imagePath) {
+		for (File i : imagePath) {
+			addImage(i);
+		}
+		height = getImageHeight();
+		width = getImageWidth();
 	}
 	
 	/** Creates a sprite with the given image and x/y coordinates.
 	 */
-	public Sprite(File imagePath, double x, double y) {
-		setImage(imagePath);
+	public Sprite(double x, double y, File imagePath) {
+		addImage(imagePath);
+		height = getImageHeight();
+		width = getImageWidth();
+		this.x = x;
+		this.y = y;
+	}
+	
+	/** Creates a sprite with the given images and x/y coordinates.
+	 */
+	public Sprite(double x, double y, File... imagePath) {
+		for (File i : imagePath) {
+			addImage(i);
+		}
+		height = getImageHeight();
+		width = getImageWidth();
 		this.x = x;
 		this.y = y;
 	}
@@ -41,11 +67,9 @@ public class Sprite implements Serializable {
 	 *
 	 * @return true if the sprite's image was set
 	 */
-	public boolean setImage(File imagePath) {
+	public boolean addImage(File imagePath) {
 		try {
 			images.add(ImageIO.read(imagePath));
-			height = getImageHeight();
-			width = getImageWidth();
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -82,6 +106,8 @@ public class Sprite implements Serializable {
 		xSpeed += xAccel;
 		ySpeed += yAccel;
 		currentFrame = (currentFrame + 1) % images.size();
+		height = getImageHeight();
+		width = getImageWidth();
 	}
 	
 	/** Gets the vertical position of the top edge of this sprite.
