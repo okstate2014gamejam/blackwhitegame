@@ -23,14 +23,6 @@ public class Sprite implements Serializable {
 	 */
 	public Sprite() { }
 	
-	/** Creates a sprite with a given image, whose position will be initialized later.
-	 */
-	public Sprite(File imagePath) {
-		addImage(imagePath);
-		height = getImageHeight();
-		width = getImageWidth();
-	}
-	
 	/** Creates a sprite with a given images, whose position will be initialized later.
 	 */
 	public Sprite(File... imagePath) {
@@ -39,16 +31,6 @@ public class Sprite implements Serializable {
 		}
 		height = getImageHeight();
 		width = getImageWidth();
-	}
-	
-	/** Creates a sprite with the given image and x/y coordinates.
-	 */
-	public Sprite(double x, double y, File imagePath) {
-		addImage(imagePath);
-		height = getImageHeight();
-		width = getImageWidth();
-		this.x = x;
-		this.y = y;
 	}
 	
 	/** Creates a sprite with the given images and x/y coordinates.

@@ -13,14 +13,20 @@ public class KeyControls implements KeyListener {
 	
 	public void keyPressed(KeyEvent e) { 
 		switch(e.getKeyCode()) {
-			// do something
+			case KeyEvent.VK_RIGHT: model.right = true; break;
+			case KeyEvent.VK_LEFT: model.left = true; break;
+			case KeyEvent.VK_DOWN: model.down = true; break;
+			case KeyEvent.VK_UP: model.up = true; break;
 			default: break;
 		}
 	}
 	
 	public void keyReleased(KeyEvent e) {
 		switch(e.getKeyCode()) {
-			// invert results of keyPressed
+			case KeyEvent.VK_RIGHT: model.right = false; break;
+			case KeyEvent.VK_LEFT: model.left = false; break;
+			case KeyEvent.VK_DOWN: model.down = false; break;
+			case KeyEvent.VK_UP: model.up = false; break;
 			default: break;
 		}
 	}

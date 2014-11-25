@@ -1,11 +1,13 @@
 import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.io.File;
 
 public class LevelOne implements Scene {
 	/** Has defined boundaries and objects, enemies, etc. */
 	
 	private BGM bgm = new BGM();
+	private Model model;
 	
 	// 'sprites' are the sprites that are somewhere in this level, even if not visible or on the screen right now
 	private List<Sprite> sprites = new ArrayList<Sprite>(),
@@ -15,6 +17,11 @@ public class LevelOne implements Scene {
 		boundaryX = 0, boundaryY = 0, 		// map boundaries
 		cameraStartX = 0, cameraStartY = 0; // change if the camera doesn't start in the top-left corner of the map
 	
+	public LevelOne(Model m) {
+		model = m;
+		sprites.add(new Sprite(100, 100, new File("images/standsprite.png")));
+		visibleSprites.addAll(sprites);
+	}
 	
 	/** Returns a list of the visible sprites.
 	 */
@@ -32,6 +39,11 @@ public class LevelOne implements Scene {
 	/** Moves all sprites in 'sprites' by calling their move method.
 	 */
 	private void moveSprites() {
+		if (model.right) {
+			sprites.get(0).xSpeed = 10;
+		} else {
+			sprites.get(0).xSpeed = 0;
+		}
 		for (Sprite i : sprites) {
 			i.move();
 		}

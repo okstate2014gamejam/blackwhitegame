@@ -7,9 +7,10 @@ public class Model {
 	public int[] size = {600, 400};
 	public int fps = 60;
 	public String gameTitle = "Game";
+	public boolean right = false, left = false, up = false, down = false;
 	
 	// current display info
-	private Scene currentScene;
+	private Scene currentScene = new LevelOne(this);
 	
 	/** Called by the controller when a timer event is fired. 
 	 */
