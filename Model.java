@@ -4,10 +4,10 @@ import java.util.ArrayList;
 public class Model {
 	
 	// basic info
-	public int[] size = {600, 400};
+	public int[] size = {800, 600};
 	public int fps = 60;
 	public String gameTitle = "Game";
-	public boolean right = false, left = false, up = false, down = false;
+	public boolean right = false, left = false, up = false, down = false, shift = false;
 	
 	// current display info
 	private Scene currentScene = new LevelOne(this);

@@ -41,8 +41,17 @@ public class LevelOne implements Scene {
 	private void moveSprites() {
 		if (model.right) {
 			sprites.get(0).xSpeed = 10;
+		} else if (model.left) {
+			sprites.get(0).xSpeed = -10;
 		} else {
 			sprites.get(0).xSpeed = 0;
+		}
+		if (model.up) {
+			sprites.get(0).ySpeed = -10;
+		} else if (model.down) {
+			sprites.get(0).ySpeed = 10;
+		} else {
+			sprites.get(0).ySpeed = 0;
 		}
 		for (Sprite i : sprites) {
 			i.move();

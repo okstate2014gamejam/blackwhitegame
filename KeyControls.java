@@ -17,6 +17,7 @@ public class KeyControls implements KeyListener {
 			case KeyEvent.VK_LEFT: model.left = true; break;
 			case KeyEvent.VK_DOWN: model.down = true; break;
 			case KeyEvent.VK_UP: model.up = true; break;
+			case KeyEvent.VK_SHIFT: model.shift = true; break;
 			default: break;
 		}
 	}
@@ -27,6 +28,7 @@ public class KeyControls implements KeyListener {
 			case KeyEvent.VK_LEFT: model.left = false; break;
 			case KeyEvent.VK_DOWN: model.down = false; break;
 			case KeyEvent.VK_UP: model.up = false; break;
+			case KeyEvent.VK_SHIFT: model.shift = false; break;
 			default: break;
 		}
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Sprite implements Serializable {
 	/** Represents anything visible that isn't a background image, 
@@ -11,21 +12,31 @@ public class Sprite implements Serializable {
 	 * 
 	 * 	Note: Using BufferedImage ties sizes to pixels and the view to something that can handle buffered images. It would be better MVC architecture to avoid that, but this is more convenient for a platformer game.
 	 */
+	 
+	enum Movement {
+		NONE, LEFT, RIGHT
+	}
 	
 	public static final long serialVersionUID = 1L;
 	public double x = 0, y = 0, xSpeed = 0, ySpeed = 0, xAccel = 0, yAccel = 0, height = 0, width = 0;
 	// having height/width different from imageHeight/imageWidth is useful if the sprite's image size doesn't match its actual dimensions.
 	public int currentFrame = 0;
 	
-	private LinkedList<BufferedImage> images = new LinkedList<BufferedImage>();
+	private LinkedList<BufferedImage> currentFrames,
+			idleFrames = new LinkedList<BufferedImage>(), 
+			leftFrames = new LinkedList<BufferedImage>(), 
+			rightFrames = new LinkedList<BufferedImage>();
 	
 	/** Creates a sprite to be initialized later. 
 	 */
-	public Sprite() { }
+	public Sprite() { 
+		currentFrames = idleFrames;
+	}
 	
 	/** Creates a sprite with a given images, whose position will be initialized later.
 	 */
 	public Sprite(File... imagePath) {
+		currentFrames = idleFrames;
 		for (File i : imagePath) {
 			addImage(i);
 		}
@@ -36,6 +47,7 @@ public class Sprite implements Serializable {
 	/** Creates a sprite with the given images and x/y coordinates.
 	 */
 	public Sprite(double x, double y, File... imagePath) {
+		currentFrames = idleFrames;
 		for (File i : imagePath) {
 			addImage(i);
 		}
@@ -45,13 +57,36 @@ public class Sprite implements Serializable {
 		this.y = y;
 	}
 	
-	/** Sets the sprite's image to the given file.
+	/** Adds the given file to the sprite's idle animation.
 	 *
 	 * @return true if the sprite's image was set
 	 */
 	public boolean addImage(File imagePath) {
 		try {
-			images.add(ImageIO.read(imagePath));
+			idleFrames.add(ImageIO.read(imagePath));
+			return true;
+		} catch (IOException e) {
+			return false;
+		} catch (IllegalArgumentException e) {
+			return false;
+		} catch (RuntimeException e) {
+			throw e;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/** Sets the sprite's image to the given file.
+	 *
+	 * @return true if the sprite's image was set
+	 */
+	public boolean addImage(File imagePath, Movement m) {
+		try {
+			switch (m) {
+			case LEFT: leftFrames = leftFrames; break;
+			case RIGHT: rightFrames.add(ImageIO.read(imagePath)); break;
+			default: idleFrames.add(ImageIO.read(imagePath));
+			}
 			return true;
 		} catch (IOException e) {
 			return false;
@@ -69,7 +104,7 @@ public class Sprite implements Serializable {
 	 * @return BufferedImage
 	 */
 	public BufferedImage getImage() {
-		return images.get(currentFrame);
+		return currentFrames.get(currentFrame);
 	}
 	
 	private int getImageWidth() {
@@ -80,6 +115,18 @@ public class Sprite implements Serializable {
 		return getImage().getHeight();
 	}
 	
+	private List<BufferedImage> getCurrentFrames() {
+		return currentFrames;
+	}
+	
+	private void setCurrentFrames(Movement m) {
+		switch (m) {
+		case LEFT: if (leftFrames.size() > 0) currentFrames = leftFrames; break;
+		case RIGHT: if (rightFrames.size() > 0) currentFrames = rightFrames; break;
+		default: currentFrames = idleFrames;
+		}
+	}
+	
 	/** Moves the sprite by its speed. Adds the sprite's speed to its coordinates, then adds acceleration to speed.
 	 */
 	public void move() {
@@ -87,7 +134,14 @@ public class Sprite implements Serializable {
 		y += ySpeed;
 		xSpeed += xAccel;
 		ySpeed += yAccel;
-		currentFrame = (currentFrame + 1) % images.size();
+		if (Math.round(xSpeed) > 0) {
+			setCurrentFrames(Movement.RIGHT);
+		} else if (Math.round(xSpeed) < 0) {
+			setCurrentFrames(Movement.LEFT);
+		} else {
+			setCurrentFrames(Movement.NONE);
+		}
+		currentFrame = (currentFrame + 1) % getCurrentFrames().size();
 		height = getImageHeight();
 		width = getImageWidth();
 	}

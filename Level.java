@@ -43,7 +43,8 @@ public abstract class Level implements Scene {
 		int i, j, tot;
 		Sprite a, b;
 		for (i=0, tot = visibleSprites.size(); i<tot; i++) {
-			for (j=i; j<tot; j++) {
+			for (j=i+1; j<tot; j++) {
+				if (i == j) { continue; }
 				a = visibleSprites.get(i);
 				b = visibleSprites.get(j);
 				if (a.collidesWith(b)) {
