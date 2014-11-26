@@ -1,4 +1,4 @@
-name: "Player"
+name: "player"
 images: ["resources/sprite data/images/standsprite.png",
 "resources/sprite data/images/spriterunright1.png",
 "resources/sprite data/images/spriterunright2.png",
