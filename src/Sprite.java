@@ -106,7 +106,7 @@ public class Sprite implements Serializable {
 	public boolean addImage(File imagePath, Movement m) {
 		try {
 			switch (m) {
-			case LEFT: leftFrames = leftFrames; break;
+			case LEFT: leftFrames.add(ImageIO.read(imagePath)); break;
 			case RIGHT: rightFrames.add(ImageIO.read(imagePath)); break;
 			default: idleFrames.add(ImageIO.read(imagePath));
 			}
