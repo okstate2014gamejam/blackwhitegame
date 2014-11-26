@@ -43,7 +43,7 @@ public class View extends JFrame {
 		private void drawSprites(Graphics g) {
 			List<Sprite> toDraw = model.getSprites();
 			for(Sprite i : toDraw) {
-				g.drawImage(i.getImage(), (int)Math.round(i.x), (int)Math.round(i.y), 
+				g.drawImage(i.getImage(), (int)Math.round(i.x*model.size[0]), (int)Math.round(i.y*model.size[1]), 
 							(int)Math.round(i.width), (int)Math.round(i.height), this);
 			}
 		}

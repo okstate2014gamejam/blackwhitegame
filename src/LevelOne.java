@@ -19,7 +19,7 @@ public class LevelOne implements Scene {
 	
 	public LevelOne(Model m) {
 		model = m;
-		sprites.add(new Sprite(100, 100, Sprite.Type.PLAYER, new File("resources/sprite data/images/standsprite.png")));
+		sprites.add(SpriteFactory.createSprite("player"));
 		visibleSprites.addAll(sprites);
 	}
 	
@@ -40,19 +40,20 @@ public class LevelOne implements Scene {
 	 */
 	private void moveSprites() {
 		if (model.right) {
-			sprites.get(0).xSpeed = 10;
+			sprites.get(0).xSpeed = 0.05;
 		} else if (model.left) {
-			sprites.get(0).xSpeed = -10;
+			sprites.get(0).xSpeed = -0.05;
 		} else {
 			sprites.get(0).xSpeed = 0;
 		}
 		if (model.up) {
-			sprites.get(0).ySpeed = -10;
+			sprites.get(0).ySpeed = -0.05;
 		} else if (model.down) {
-			sprites.get(0).ySpeed = 10;
+			sprites.get(0).ySpeed = 0.05;
 		} else {
 			sprites.get(0).ySpeed = 0;
 		}
+		
 		for (Sprite i : sprites) {
 			i.move();
 		}

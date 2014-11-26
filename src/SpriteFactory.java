@@ -17,7 +17,7 @@ public class SpriteFactory {
 				InputStream input = new FileInputStream(file);
 				
 				if (file.getName().startsWith(".")) {
-					break;
+					continue;
 				}
 				
 				HashMap<String, Object> tempMap = (HashMap<String, Object>) yaml.load(input);
@@ -32,15 +32,15 @@ public class SpriteFactory {
 	
 	public static Sprite createSprite(String name) {
 		
-		HashMap<String, Object> tempMap = SpriteFactory.spriteData.get(name);
+		HashMap<String, Object> tempMap = SpriteFactory.spriteData.get(name.toLowerCase());
 		Sprite.Type type = null;
 		
 		switch ((String) tempMap.get("type")) {
 			case "PLAYER": type = Sprite.Type.PLAYER; break;
 			case "ENEMY" : type = Sprite.Type.ENEMY; break;
-			case "OBJECT": type = Sprite.Type.OBJECT; break;
 			case "ITEM"  : type = Sprite.Type.ITEM; break;
 			case "ZONE"  : type = Sprite.Type.ZONE; break;
+			default : type = Sprite.Type.OBJECT;
 		}
 
 		return new Sprite((double) tempMap.get("x"), (double) tempMap.get("y"), type, (LinkedList<String>) tempMap.get("images"));
