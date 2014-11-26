@@ -13,6 +13,10 @@ public class Sprite implements Serializable {
 	 * 	Note: Using BufferedImage ties sizes to pixels and the view to something that can handle buffered images. It would be better MVC architecture to avoid that, but this is more convenient for a platformer game.
 	 */
 	 
+	enum Type { 
+		PLAYER, ENEMY, OBJECT, ITEM, ZONE
+	}
+	
 	enum Movement {
 		NONE, LEFT, RIGHT
 	}
@@ -21,6 +25,7 @@ public class Sprite implements Serializable {
 	public double x = 0, y = 0, xSpeed = 0, ySpeed = 0, xAccel = 0, yAccel = 0, height = 0, width = 0;
 	// having height/width different from imageHeight/imageWidth is useful if the sprite's image size doesn't match its actual dimensions.
 	public int currentFrame = 0;
+	public Type type;
 	
 	private LinkedList<BufferedImage> currentFrames,
 			idleFrames = new LinkedList<BufferedImage>(), 
@@ -46,7 +51,7 @@ public class Sprite implements Serializable {
 	
 	/** Creates a sprite with the given images and x/y coordinates.
 	 */
-	public Sprite(double x, double y, File... imagePath) {
+	public Sprite(double x, double y, Type t, File... imagePath) {
 		currentFrames = idleFrames;
 		for (File i : imagePath) {
 			addImage(i);
