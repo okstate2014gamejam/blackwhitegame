@@ -1,15 +1,15 @@
 name: "player"
 imagesIdle: ["resources/sprite data/images/standsprite.png"]
-rightImages: ["resources/sprite data/images/spriterunright1.png",
+imagesRight: ["resources/sprite data/images/spriterunright1.png",
 "resources/sprite data/images/spriterunright2.png",
 "resources/sprite data/images/spriterunright3.png"]
-leftImages: ["resources/sprite data/images/spriterunleft1.png",
+imagesLeft: ["resources/sprite data/images/spriterunleft1.png",
 "resources/sprite data/images/spriterunleft2.png",
 "resources/sprite data/images/spriterunleft3.png"]
-inAirRightImages: ["resources/sprite data/images/spriterunright1.png",
+imagesInAirLeft: ["resources/sprite data/images/spriterunright1.png",
 "resources/sprite data/images/spriterunright2.png",
 "resources/sprite data/images/spriterunright3.png"]
-inAirLeftImages: ["resources/sprite data/images/spriterunleft1.png",
+imagesInAirRight: ["resources/sprite data/images/spriterunleft1.png",
 "resources/sprite data/images/spriterunleft2.png",
 "resources/sprite data/images/spriterunleft3.png"]
 xStart: 100.0

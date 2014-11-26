@@ -50,8 +50,11 @@ public class SpriteFactory {
 		
 		for (int i = 0; i < SpriteFactory.imageSet.length; i++) {
 			ArrayList<String> tempList = (ArrayList<String>) tempMap.get(SpriteFactory.imageSet[i]);
+			System.out.println("TempList: " + tempList);
 			for (String s : tempList) {
 				Sprite.Movement movement = null;
+				
+				System.out.println("Filepath: " + s);
 				
 				if (i == 0) {
 					movement = Sprite.Movement.NONE;

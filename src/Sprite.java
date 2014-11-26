@@ -158,6 +158,9 @@ public class Sprite implements Serializable {
 	 * @return BufferedImage
 	 */
 	public BufferedImage getImage() {
+		if (currentFrame+1 > currentFrames.size()) {
+			return null;
+		}
 		return currentFrames.get(currentFrame);
 	}
 	
