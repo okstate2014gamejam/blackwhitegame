@@ -18,19 +18,21 @@ public class Sprite implements Serializable {
 	}
 	
 	enum Movement {
-		NONE, LEFT, RIGHT
+		NONE, LEFT, RIGHT, UP, DOWN
 	}
 	
 	public static final long serialVersionUID = 1L;
 	public double x = 0, y = 0, xSpeed = 0, ySpeed = 0, xAccel = 0, yAccel = 0, height = 0, width = 0;
 	// having height/width different from imageHeight/imageWidth is useful if the sprite's image size doesn't match its actual dimensions.
-	public int currentFrame = 0;
+	public int currentFrame = 0, counter = 0;
 	public Type type;
 	
 	private LinkedList<BufferedImage> currentFrames,
 			idleFrames = new LinkedList<BufferedImage>(), 
 			leftFrames = new LinkedList<BufferedImage>(), 
-			rightFrames = new LinkedList<BufferedImage>();
+			rightFrames = new LinkedList<BufferedImage>(),
+			jumpRightFrames = new LinkedList<BufferedImage>(), 
+			jumpLeftFrames = new LinkedList<BufferedImage>();
 	
 	/** Creates a sprite to be initialized later. 
 	 */
@@ -60,6 +62,25 @@ public class Sprite implements Serializable {
 		width = getImageWidth();
 		this.x = x;
 		this.y = y;
+	}
+	
+	/** Creates a sprite that is a copy of another. 
+	 */
+	public Sprite(Sprite s) { 
+		x = s.x;
+		y = s.y;
+		xSpeed = s.xSpeed;
+		ySpeed = s.ySpeed;
+		xAccel = s.xAccel;
+		yAccel = s.yAccel;
+		height = s.height;
+		width = s.width;
+		currentFrame = s.currentFrame;
+		type = s.type;
+		currentFrames = s.currentFrames;
+		idleFrames = s.idleFrames; 
+		leftFrames = s.leftFrames; 
+		rightFrames = s.rightFrames;
 	}
 	
 	//Creates a sprite with the given file path list and x/y coordinates.
@@ -103,11 +124,21 @@ public class Sprite implements Serializable {
 	 *
 	 * @return true if the sprite's image was set
 	 */
-	public boolean addImage(File imagePath, Movement m) {
+	public boolean addImage(File imagePath, Movement m, boolean inAir) {
 		try {
 			switch (m) {
-			case LEFT: leftFrames.add(ImageIO.read(imagePath)); break;
-			case RIGHT: rightFrames.add(ImageIO.read(imagePath)); break;
+			case LEFT: if (inAir) {
+					jumpLeftFrames.add(ImageIO.read(imagePath));
+				} else {
+					leftFrames.add(ImageIO.read(imagePath)); 
+				}
+				break;
+			case RIGHT:if (inAir) {
+				jumpRightFrames.add(ImageIO.read(imagePath));
+			} else {
+				rightFrames.add(ImageIO.read(imagePath)); 
+			}
+			break;
 			default: idleFrames.add(ImageIO.read(imagePath));
 			}
 			return true;
@@ -131,11 +162,21 @@ public class Sprite implements Serializable {
 	}
 	
 	private int getImageWidth() {
-		return getImage().getWidth();
+		BufferedImage img = getImage();
+		if (img != null) {
+			return img.getWidth();
+		} else {
+			return 0;
+		}
 	}
 	
 	private int getImageHeight() {
-		return getImage().getHeight();
+		BufferedImage img = getImage();
+		if (img != null) {
+			return img.getHeight();
+		} else {
+			return 0;
+		}
 	}
 	
 	private List<BufferedImage> getCurrentFrames() {
@@ -150,13 +191,11 @@ public class Sprite implements Serializable {
 		}
 	}
 	
-	/** Moves the sprite by its speed. Adds the sprite's speed to its coordinates, then adds acceleration to speed.
-	 */
-	public void move() {
-		x += xSpeed;
-		y += ySpeed;
-		xSpeed += xAccel;
-		ySpeed += yAccel;
+	private void updateFrame() {
+		if (counter % 15 != 0) {
+			counter++;
+			return;
+		}
 		if (Math.round(xSpeed) > 0) {
 			setCurrentFrames(Movement.RIGHT);
 		} else if (Math.round(xSpeed) < 0) {
@@ -164,9 +203,25 @@ public class Sprite implements Serializable {
 		} else {
 			setCurrentFrames(Movement.NONE);
 		}
-		currentFrame = (currentFrame + 1) % getCurrentFrames().size();
+		counter++;
+		currentFrame = counter % getCurrentFrames().size();
 		height = getImageHeight();
 		width = getImageWidth();
+	}
+	
+	/** Moves the sprite by its speed. Adds the sprite's speed to its coordinates, then adds acceleration to speed.
+	 */
+	public void move() {
+		x += xSpeed;
+		y += ySpeed;
+		xSpeed += xAccel;
+		ySpeed += yAccel;
+		// apply friction, TODO: replace the hard numbers with constants from a physics class
+		xSpeed *= 0.9;
+		if (ySpeed < 0) {
+			ySpeed *= 0.8;
+		}
+		updateFrame();
 	}
 	
 	/** Gets the vertical position of the top edge of this sprite.
@@ -207,15 +262,23 @@ public class Sprite implements Serializable {
 	 */
 	public boolean collidesWith(Sprite b) {
 		boolean xcollide = false;
-		
+
 		// check horizontal collision
-		if (getLeftEdge() >= b.getLeftEdge() &&
-			getLeftEdge() <= b.getRightEdge()) {
+		if (getLeftEdge()+1 >= b.getLeftEdge() &&
+			getLeftEdge()-1 <= b.getRightEdge()) {
 			// collision on my left
 			xcollide = true;
-		} else if (getRightEdge() >= b.getLeftEdge() &&
-				   getRightEdge() <= b.getRightEdge()) {
+		} else if (getRightEdge()+1 >= b.getLeftEdge() &&
+				   getRightEdge()-1 <= b.getRightEdge()) {
 			// collision on my right
+			xcollide = true;
+		} else if (getLeftEdge() <= b.getLeftEdge() &&
+				   getRightEdge() >= b.getRightEdge()) {
+			// collision in center
+			xcollide = true;
+		} else if (getLeftEdge() >= b.getLeftEdge() &&
+				   getRightEdge() <= b.getRightEdge()) {
+			// collision in center
 			xcollide = true;
 		}
 		
@@ -224,14 +287,22 @@ public class Sprite implements Serializable {
 		}
 		
 		// check vertical collision
-		if (getTopEdge() >= b.getTopEdge() &&
-			getTopEdge() <= b.getBottomEdge()) {
+		if (getTopEdge()+1 >= b.getTopEdge() &&
+			getTopEdge()-1 <= b.getBottomEdge()) {
 			// collision on top
 			return true;
-		} else if (getBottomEdge() >= b.getTopEdge() &&
-				   getBottomEdge() <= b.getBottomEdge()) {
+		} else if (getBottomEdge()+1 >= b.getTopEdge() &&
+				   getBottomEdge()-1 <= b.getBottomEdge()) {
 			// collision on bottom
 			return true;
+		} else if (getTopEdge() <= b.getTopEdge() &&
+				   getBottomEdge() >= b.getBottomEdge()) {
+			// collision in center
+			xcollide = true;
+		} else if (getTopEdge() >= b.getTopEdge() &&
+				   getBottomEdge() <= b.getBottomEdge()) {
+			// collision in center
+			xcollide = true;
 		}
 		
 		// no collision found
