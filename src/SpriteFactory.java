@@ -43,6 +43,6 @@ public class SpriteFactory {
 			default : type = Sprite.Type.OBJECT;
 		}
 
-		return new Sprite((double) tempMap.get("x"), (double) tempMap.get("y"), type, (LinkedList<String>) tempMap.get("images"));
+		return new Sprite((double) tempMap.get("xStart"), (double) tempMap.get("yStart"), type, (List<String>) tempMap.get("images"));
 	}
 }

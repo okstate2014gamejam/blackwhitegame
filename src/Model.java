@@ -10,7 +10,7 @@ public class Model {
 	public boolean right = false, left = false, up = false, down = false, shift = false;
 	
 	// current display info
-	private Scene currentScene = new LevelTwo(this);
+	private Scene currentScene = new LevelOne(this);
 	
 	/** Called by the controller when a timer event is fired. 
 	 */
