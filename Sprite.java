@@ -62,6 +62,24 @@ public class Sprite implements Serializable {
 		this.y = y;
 	}
 	
+	//Creates a sprite with the given file path list and x/y coordinates.
+	public Sprite(double x, double y, Type t, List<String> imagePaths) {
+		currentFrames = idleFrames;
+		
+		try {
+			for (String s : imagePaths) {
+				addImage(new File(s));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		height = getImageHeight();
+		width = getImageWidth();
+		this.x = x;
+		this.y = y;
+	}
+	
 	/** Adds the given file to the sprite's idle animation.
 	 *
 	 * @return true if the sprite's image was set

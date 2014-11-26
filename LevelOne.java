@@ -19,7 +19,7 @@ public class LevelOne implements Scene {
 	
 	public LevelOne(Model m) {
 		model = m;
-		sprites.add(new Sprite(100, 100, new File("images/standsprite.png")));
+		sprites.add(new Sprite(100, 100, Sprite.Type.PLAYER, new File("images/standsprite.png")));
 		visibleSprites.addAll(sprites);
 	}
 	
