@@ -1,10 +1,13 @@
 import java.util.*;
 import java.io.*;
+
 import org.yaml.snakeyaml.*;
 
 public class SpriteFactory {
 	
 	private static HashMap<String, HashMap<String, Object>> spriteData = new HashMap<String, HashMap<String, Object>>();
+	
+	private static final String[] imageSet = new String[] {"imagesIdle", "imagesLeft", "imagesRight", "imagesInAirLeft", "imagesInAirRight"};
 	
 	public static boolean loadDatabase() {
 		
@@ -42,7 +45,26 @@ public class SpriteFactory {
 			case "ZONE"  : type = Sprite.Type.ZONE; break;
 			default : type = Sprite.Type.OBJECT;
 		}
-
-		return new Sprite((double) tempMap.get("xStart"), (double) tempMap.get("yStart"), type, (List<String>) tempMap.get("images"));
+		
+		Sprite toReturn = new Sprite((double) tempMap.get("xStart"), (double) tempMap.get("yStart"), type);
+		
+		for (int i = 0; i < SpriteFactory.imageSet.length; i++) {
+			ArrayList<String> tempList = (ArrayList<String>) tempMap.get(SpriteFactory.imageSet[i]);
+			for (String s : tempList) {
+				Sprite.Movement movement = null;
+				
+				if (i == 0) {
+					movement = Sprite.Movement.NONE;
+				} else if (i == 1 || i == 3) {
+					movement = Sprite.Movement.LEFT;
+				} else {
+					movement = Sprite.Movement.RIGHT;
+				}
+				
+				toReturn.addImage(new File(s), movement, (i > 2 ? true : false));
+			}
+		}
+		
+		return toReturn;
 	}
 }
